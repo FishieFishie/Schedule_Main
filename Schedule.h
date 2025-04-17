@@ -101,15 +101,34 @@ public:
     // Finds and prints courses that match an instructor's last name
     void findBYintroLN(const std::string& lastName) const {
         printHeader();
+        bool found = false;
+    
         for (const auto& pair : scheduleMap) {
             // Find position of comma in name to extract last name
             std::string instructor = pair.second.instructor;
+    
+            // Remove surrounding quotes
+            if (!instructor.empty() && instructor.front() == '"') {
+                instructor.erase(0, 1); // Remove first quote
+            }
+    
+            if (!instructor.empty() && instructor.back() == '"') {
+                instructor.pop_back(); // Remove last quote
+            }
+    
+            // Extract last name (everything before the comma)
             size_t commaPos = instructor.find(',');
             std::string actualLast = (commaPos != std::string::npos) ? instructor.substr(0, commaPos) : instructor;
-
+    
+            // Compare last name
             if (actualLast == lastName) {
                 pair.second.print();
+                found = true;
             }
+        }
+    
+        if (!found) {
+            std::cout << "No classes found for instructor: " << lastName << std::endl;
         }
     }
 };
